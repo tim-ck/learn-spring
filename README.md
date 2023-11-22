@@ -2,7 +2,7 @@
 where i place notes and project
 
 ## JPA Spring
-1. create custom JpaRepository. JpaRepository is from spring framwork
+1. create custom JpaRepository. JpaRepository is from spring framwork that has QBE query by example method
 ``` java
    @NoRepositoryBean
     public interface GenericRepository <T, ID extends   Serializable> 
@@ -55,19 +55,44 @@ where i place notes and project
   2.Create Entity
 ``` java
     @Entity
-    @Table(name="MTRK_LOCATION")
-    public class MtrkLocation implements Serializable {
+    @Table(name="TableName")
+    public class TableName implements Serializable {
     	private static final long serialVersionUID = 1L;
     
     	@Id
     	@Column(name="CODE")
     	private String code;
     
-    	@Column(name="ENG_DESC")
-    	private String engDesc;
-    	
-    	@Column(name="Location_Group")
-    	private String locationGroup;
+    	@Column(name="DESC")
+    	private String desc;
+
 
     //getter setter
 ```
+
+   3. create  DAO extend cutomeREpository
+``` java
+   public interface TableDAO  extends GenericRepository<TableName, Long> {
+
+	@Query(value ="SELECT s " +
+			  "FROM  TableName s " +
+			" WHERE code in(:param)"
+			)
+	public List<TableName> findTableName(@Param("param") String[] param);
+
+	
+   } 
+
+```
+
+ 4. implement:
+``` java
+   class ImplClass{
+@Inject
+	private TableDAO tableDAO;
+}
+
+public List<TableName> getData{
+  return tableDAO.findTableName(new String[]{"test","test2"});
+
+}
